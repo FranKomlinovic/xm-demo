@@ -21,12 +21,12 @@ public class CsvController {
         return csvService.allWithNormalizedRange();
     }
 
-    @GetMapping("/getOldestNewestMinMax/{symbol}")
+    @GetMapping("/oldestNewestMinMax/{symbol}")
     OldestNewestMinMaxDto oldestNewestMinMaxDto(@PathVariable String symbol) {
         return csvService.calculateOldestNewestMinMax(symbol);
     }
 
-    @GetMapping("/normalized/{date}")
+    @GetMapping("/highestNormalized/{date}")
     NormalizedRangeDto normalizedRangeByDay(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateTo) {
         return csvService.withNormalizedRangeByDay(dateTo);
 
