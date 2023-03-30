@@ -96,7 +96,7 @@ class CsvServiceTest {
     }
 
     @Test
-    public void testWithNormalizedRangeByDay() {
+    void testWithNormalizedRangeByDay() {
         // Given
         Date dateTo = new Date(LocalDate.of(2022, 1, 1).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
         List<CsvEntity> entities = new ArrayList<>();
