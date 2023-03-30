@@ -17,6 +17,8 @@ public class CsvService {
     private CsvRepository beanBuilder;
     private Mapper mapper;
 
+    private static final String MESSAGE = "Cannot load resources";
+
     public OldestNewestMinMaxDto calculateOldestNewestMinMax(String symbol) {
         List<CsvEntity> csvEntities = beanBuilder.loadDataFromCsv(symbol);
 
@@ -24,16 +26,16 @@ public class CsvService {
         Comparator<CsvEntity> timestampComparator = Comparator.comparing(CsvEntity::getTimestamp);
 
         CsvEntity max = csvEntities.stream().max(priceComparator)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot load resources"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, MESSAGE));
 
         CsvEntity min = csvEntities.stream().min(priceComparator)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot load resources"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, MESSAGE));
 
         CsvEntity oldest = csvEntities.stream().min(timestampComparator)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot load resources"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, MESSAGE));
 
         CsvEntity newest = csvEntities.stream().max(timestampComparator)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot load resources"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, MESSAGE));
 
 
         return new OldestNewestMinMaxDto(oldest, newest, min, max);
@@ -66,7 +68,7 @@ public class CsvService {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Cannot find any crypto for given date");
         }
-        return allRanges.stream().max(priceComparator).get();
+        return allRanges.stream().max(priceComparator).orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, MESSAGE));
     }
 
     private NormalizedRangeDto calculate(String name, List<CsvEntity> objects, long startInMilis, long endInMilis) {
